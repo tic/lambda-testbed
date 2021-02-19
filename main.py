@@ -10,6 +10,7 @@ def main():
     from tests import test_list
     import importlib.util
     functions = {}
+    passed = 0
 
     for (file, test_func, id) in test_list:
         try:
@@ -33,16 +34,20 @@ def main():
             if callable(verifier):
                 if verifier(result):
                     print(f'[PASS] passed test {test_func.__name__}#{id}')
+                    passed += 1
                 else:
                     print(f'[FAIL] failed test {test_func.__name__}#{id}')
             else:
                 if result == verifier:
                     print(f'[PASS] passed test {test_func.__name__}#{id}')
+                    passed += 1
                 else:
                     print(f'[FAIL] failed test {test_func.__name__}#{id}')
         except Exception as err:
             print(f'[ERR] Encountered error in result verifier for test {test_func.__name__}#{id}:')
             print(err)
+
+    print(f'\n\nPassed {passed} of {len(test_list)} tests.')
 
 if __name__ == '__main__':
     main()
