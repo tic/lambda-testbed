@@ -1,10 +1,10 @@
 from main import test, test_list
-from utils import default_context, simple_context
+from utils import default_event
 
 @test('exampleA', id=1)
 def facilitiesApiTest():
-    event = None
-    context = default_context()
+    context = None
+    event = default_event()
 
     # Write a function to evaluate whether the output was correct,
     # or pass a non-function value and it will check for equality.

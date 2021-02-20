@@ -1,5 +1,8 @@
 
 def default_context():
+    return None
+
+def default_event():
     return {
         'body-json': {},
         'params': {
@@ -8,7 +11,7 @@ def default_context():
         }
     }
 
-def simple_context(path_params=[], query_params=[], body_params=[], custom_params=[]):
+def simple_event(path_params=[], query_params=[], body_params=[], custom_params=[]):
     base = default_context()
     for param in path_params:
         base['params']['path'][param['name']] = param['value']
