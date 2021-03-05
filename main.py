@@ -1,17 +1,21 @@
 
 test_list = []
 def test(file, id=None):
-    def decorate(func):
-        test_list.append((file, func, str(id)))
-        return func
+    def decorate(user_test_func):
+        test_list.append((file, user_test_func, str(id)))
+        return user_test_func
     return decorate
 
 def main():
+    from datetime import datetime
     from tests import test_list
     import importlib.util
     functions = {}
     passed = 0
 
+    timesToSec = lambda start, stop : round((stop - start).microseconds / 10000) / 100
+
+    test_start = datetime.now()
     for (file, test_func, id) in test_list:
         try:
             lamba_function = functions[file]
@@ -24,30 +28,30 @@ def main():
 
         event, context, verifier = test_func()
         try:
+            start = datetime.now()
             result = lambda_function(event, context)
+            stop = datetime.now()
+            execution_time = (stop - start).microseconds
         except Exception as err:
             print(f'[ERR] Encountered error in lamba function during test {test_func.__name__}#{id}:')
             print(err)
             continue
 
         try:
-            if callable(verifier):
-                if verifier(result):
-                    print(f'[PASS] passed test {test_func.__name__}#{id}')
-                    passed += 1
-                else:
-                    print(f'[FAIL] failed test {test_func.__name__}#{id}')
+            time_passed = f'{execution_time} µs' if execution_time < 100000 else f'{timesToSec(start, stop)} s'
+
+            did_pass = verifier(result) if callable(verifier) else result == verifier
+            if did_pass:
+                print(f'[PASS] passed test {test_func.__name__}#{id} ({time_passed})')
+                passed += 1
             else:
-                if result == verifier:
-                    print(f'[PASS] passed test {test_func.__name__}#{id}')
-                    passed += 1
-                else:
-                    print(f'[FAIL] failed test {test_func.__name__}#{id}')
+                print(f'[FAIL] failed test {test_func.__name__}#{id} ({time_passed})')
         except Exception as err:
             print(f'[ERR] Encountered error in result verifier for test {test_func.__name__}#{id}:')
             print(err)
 
-    print(f'\n\nPassed {passed} of {len(test_list)} tests.')
+    test_stop = datetime.now()
+    print(f'\n\nPassed {passed} of {len(test_list)} tests. ({timesToSec(test_start, test_stop)} s)')
 
 if __name__ == '__main__':
     main()
