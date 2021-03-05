@@ -5,7 +5,7 @@ It presents a very simplistic interface and is designed to be easy to use for pe
 
 ### How do I use this testing framework?
 
-1. Download this repo as a zip or clone it to your machine.
+1. Navigate to the [releases](https://github.com/tic/lambda-testbed/releases) section of the repo, select the latest one, download the `Source (zip)`, and extract to wherever you need it.
 2. Drop your AWS style lambda functions into `/functions`.
 3. Add test cases in `/tests.py` for your lambda functions.
 4. Run `python main.py` from the root of the repository folder.
